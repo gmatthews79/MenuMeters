@@ -1,3 +1,26 @@
+# MenuMeters 3.1.1
+
+The disk meter can show how fast the startup disk is reading and writing, and
+the disk menu works on macOS 27.
+
+## New
+
+- The disk meter can show the read and write speeds of the startup disk next
+  to its activity indicator. Turn it on with "Show read and write speeds of the
+  startup disk" in the Disk tab. Only the disk that macOS started from is
+  counted: other disks are left out, and a disk image is counted once, as
+  reads and writes of its file. The speeds refresh about once a second.
+
+## Fixes
+
+- On macOS 27 the disk menu showed a blank row for every volume. The rows are
+  back, and clicking one opens or ejects the volume as before.
+
+## New home
+
+The website is https://menumeters-osx.github.io, and the source, releases and
+issues are at https://github.com/menumeters-osx/MenuMeters.
+
 # MenuMeters 3.1.0
 
 The meters show the right numbers again, and MenuMeters now updates itself.
