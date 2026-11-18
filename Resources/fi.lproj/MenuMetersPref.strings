@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "Taltion valinta levyvalikosta";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "Näytä levyaktiivisuuden Menu Meter";
+"Show read and write speeds of the startup disk" = "Näytä käynnistyslevyn luku- ja kirjoitusnopeudet";
 "Show paging activity indicator" = "Näytä sivutusaktiivisuuden indikaattori";
 "General" = "Yleiset";
 "Show Used/Free labels" = "Näytä Käytössä/vapaana-nimiöt";

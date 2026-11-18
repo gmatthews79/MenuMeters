@@ -26,6 +26,7 @@
 //  Changes:
 //  2026-10     gonejack: rewritten in Swift from the Objective-C original.
 //  2026-10-30  Luca Gibelli: login item follows the user's choice; activation policy helper; new bundle identifier.
+//  2026-11-18  Luca Gibelli: disk speed display constants.
 //
 
 import Cocoa
@@ -100,6 +101,12 @@ enum Disk {
     static let arrowsImageSet = 4
     static let arrowsLargeImageSet = 5
     static let viewWidth: CGFloat = 16
+    /// Read and write speeds are refreshed at most this often, in seconds,
+    /// however fast the activity indicator updates.
+    static let speedRefreshInterval: TimeInterval = 1
+    static let speedFontSize: CGFloat = 9.5
+    static let speedGap: CGFloat = 3
+    static let speedLabelGap: CGFloat = 2
 }
 
 enum Mem {

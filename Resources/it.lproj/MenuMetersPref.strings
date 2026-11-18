@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "Selezionare un volume dal menu disco";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "Mostra Menu Meter Attività Disco";
+"Show read and write speeds of the startup disk" = "Mostra le velocità di lettura e scrittura del disco di avvio";
 "Show paging activity indicator" = "Mostra indicatore attività di paging";
 "General" = "Generale";
 "Show Used/Free labels" = "Mostra etichette Usata/Libera";

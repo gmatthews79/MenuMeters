@@ -74,6 +74,10 @@
 "%@ Free" = "%1$@ Boş";
 "%@ Total" = "%1$@ Toplam";
 
+// Labels of the startup disk's read and write speeds in the menu bar
+"R:" = "O:";
+"W:" = "Y:";
+
 // Unit labels
 "KB" = "KB";
 "MB" = "MB";

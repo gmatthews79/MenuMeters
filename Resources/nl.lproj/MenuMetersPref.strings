@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "Kiezen van een volume uit het menu";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "Toon schijf-MenuMeter";
+"Show read and write speeds of the startup disk" = "Toon lees- en schrijfsnelheid van de opstartschijf";
 "Show paging activity indicator" = "Toon indicatie van 'paging'-activiteit";
 "General" = "Algemeen";
 "Show Used/Free labels" = "Toon labels voor vrij / gebruikt";

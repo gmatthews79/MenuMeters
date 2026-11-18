@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "メニューからボリューム選択した時：";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "ディスクメータを表示：";
+"Show read and write speeds of the startup disk" = "起動ディスクの読み込み/書き込み速度を表示";
 "Show paging activity indicator" = "ページングインジケータを表示";
 "General" = "一般オプション";
 "Show Used/Free labels" = "use (使用量)／free (空き容量) のラベルを付ける";

@@ -26,6 +26,7 @@
 //  Changes:
 //  2026-10     gonejack: rewritten in Swift from the Objective-C original.
 //  2026-10-30  Luca Gibelli: login item and update controls; meter changes are always announced.
+//  2026-11-18  Luca Gibelli: startup disk speeds checkbox.
 //
 
 import Cocoa
@@ -76,6 +77,7 @@ final class PrefsWindowController: NSWindowController, NSWindowDelegate, NSToolb
     private var diskInterval: NSSlider!
     private var diskIntervalDisplay: NSTextField!
     private var diskSelectMode: NSPopUpButton!
+    private var diskShowSpeeds: NSButton!
 
     // Memory
     private var memMeterToggle: NSButton!
@@ -311,6 +313,9 @@ final class PrefsWindowController: NSWindowController, NSWindowDelegate, NSToolb
         diskMeterToggle = checkbox(container, "Display Disk Activity Menu Meter",
                                    NSRect(x: 19, y: 516, width: 251, height: 27),
                                    #selector(diskPrefChange(_:)))
+        diskShowSpeeds = checkbox(container, "Show read and write speeds of the startup disk",
+                                  NSRect(x: 19, y: 350, width: 515, height: 18),
+                                  #selector(diskPrefChange(_:)))
     }
 
     private func buildMemoryTab() {
@@ -1034,6 +1039,8 @@ final class PrefsWindowController: NSWindowController, NSWindowDelegate, NSToolb
             prefs.diskInterval = diskInterval.doubleValue
         } else if isSender(sender, diskSelectMode) {
             prefs.diskSelectMode = diskSelectMode.indexOfSelectedItem
+        } else if isSender(sender, diskShowSpeeds) {
+            prefs.diskShowSpeeds = diskShowSpeeds.state == .on
         }
         updateDiskControls()
         notifyMeter(MM.diskBundleID)
@@ -1044,6 +1051,7 @@ final class PrefsWindowController: NSWindowController, NSWindowDelegate, NSToolb
         diskInterval.doubleValue = prefs.diskInterval
         diskIntervalDisplay.doubleValue = diskInterval.doubleValue
         diskSelectMode.selectItem(at: prefs.diskSelectMode)
+        diskShowSpeeds.state = prefs.diskShowSpeeds ? .on : .off
     }
 
     @objc private func memPrefChange(_ sender: Any?) {

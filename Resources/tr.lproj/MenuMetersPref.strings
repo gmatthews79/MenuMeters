@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "Disk menüsünden bir bölüm seçme";
 "ImageSet" = "Görsel Seti";
 "Display Disk Activity Menu Meter" = "Disk Etkinliği ölçeri göster";
+"Show read and write speeds of the startup disk" = "Başlangıç diskinin okuma ve yazma hızlarını göster";
 "Show paging activity indicator" = "Sayfalama etkinlik göstergelerini göster";
 "General" = "Genel";
 "Show Used/Free labels" = "Kullanılan/Boş etiketlerini göster";

@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "Selecting a volume from the disk menu";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "Display Disk Activity Menu Meter";
+"Show read and write speeds of the startup disk" = "Show read and write speeds of the startup disk";
 "Show paging activity indicator" = "Show paging activity indicator";
 "General" = "General";
 "Show Used/Free labels" = "Show Used/Free labels";

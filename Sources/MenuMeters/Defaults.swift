@@ -26,6 +26,7 @@
 //  Changes:
 //  2026-10     gonejack: rewritten in Swift from the Objective-C original.
 //  2026-10-30  Luca Gibelli: new bundle identifier, with a one-time migration of the old preferences.
+//  2026-11-18  Luca Gibelli: DiskShowSpeeds preference.
 //
 
 import Cocoa
@@ -209,6 +210,11 @@ final class Prefs {
     var diskSelectMode: Int {
         get { loadInt("DiskSelectMode", low: 0, high: 1, def: 0) }
         set { defaults.set(newValue, forKey: "DiskSelectMode") }
+    }
+
+    var diskShowSpeeds: Bool {
+        get { loadBool("DiskShowSpeeds", default: false) }
+        set { defaults.set(newValue, forKey: "DiskShowSpeeds") }
     }
 
     var diskSpaceForceBaseTwo: Bool {
