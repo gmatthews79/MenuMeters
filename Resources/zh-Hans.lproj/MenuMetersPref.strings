@@ -52,6 +52,7 @@
 "Selecting a volume from the disk menu" = "从磁盘菜单选择宗卷";
 "ImageSet" = "ImageSet";
 "Display Disk Activity Menu Meter" = "显示磁盘活动菜单仪表";
+"Show read and write speeds of the startup disk" = "显示启动磁盘的读取和写入速度";
 "Show paging activity indicator" = "显示分页中活动检视器";
 "General" = "通用";
 "Show Used/Free labels" = "显示已使用/可用标签";

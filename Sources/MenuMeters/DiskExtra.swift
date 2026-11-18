@@ -28,6 +28,7 @@
 //  2026-10     gonejack: rewritten in Swift from the Objective-C original.
 //  2026-10-30  Luca Gibelli: safer, asynchronous eject with error reporting.
 //  2026-10-31  Luca Gibelli: volume rows shown in the item title, which macOS 27 draws.
+//  2026-11-18  Luca Gibelli: optional read and write speeds of the startup disk.
 //
 
 import Cocoa
@@ -43,6 +44,14 @@ final class DiskExtra: MenuExtraBase {
     /// Running diskutil eject/unmount tasks, keyed by mount path.
     private var ejectTasks: [String: Process] = [:]
 
+    private static let speedUnits = ["B/s", "KB/s", "MB/s", "GB/s"]
+    private let speedFont = NSFont.monospacedDigitSystemFont(ofSize: Disk.speedFontSize, weight: .regular)
+    /// Where the speed measurement in progress started: the uptime, and the
+    /// startup disk's byte counts at that time.
+    private var speedWindow: (time: TimeInterval, read: UInt64, written: UInt64)?
+    private var readSpeed: Double = 0
+    private var writeSpeed: Double = 0
+
     override init(bundleID: String) {
         super.init(bundleID: bundleID)
         extraMenu = NSMenu(title: "")
@@ -53,7 +62,35 @@ final class DiskExtra: MenuExtraBase {
     // MARK: - Status item
 
     override func makeImage() -> NSImage {
-        images[isDark()]?[displayedActivity] ?? blankImage
+        let icon = images[isDark()]?[displayedActivity] ?? blankImage
+        guard Prefs.shared.diskShowSpeeds else { return icon }
+
+        let attributes: [NSAttributedString.Key: Any] = [.font: speedFont, .foregroundColor: fgMenuThemeColor]
+        let readLabel = NSAttributedString(string: L("R:"), attributes: attributes)
+        let writeLabel = NSAttributedString(string: L("W:"), attributes: attributes)
+        let readValue = NSAttributedString(string: speedString(readSpeed), attributes: attributes)
+        let writeValue = NSAttributedString(string: speedString(writeSpeed), attributes: attributes)
+
+        let size = NSSize(width: menuWidth, height: height())
+        let labelX = Disk.viewWidth + Disk.speedGap
+        // The network meter's throughput lines sit at these heights in its
+        // image, which is a point shorter than this one.
+        let textHeight = imageHeight()
+        let inset = (size.height - textHeight) / 2
+        let topY = inset + floor(textHeight / 2) - 1
+        let bottomY = inset - 1
+        let appearance = statusItem?.button?.effectiveAppearance ?? NSApp.effectiveAppearance
+        return NSImage(size: size, flipped: false) { _ in
+            appearance.performAsCurrentDrawingAppearance {
+                icon.draw(at: NSPoint(x: 0, y: floor((size.height - icon.size.height) / 2)),
+                          from: .zero, operation: .sourceOver, fraction: 1)
+                readLabel.draw(at: NSPoint(x: labelX, y: topY))
+                writeLabel.draw(at: NSPoint(x: labelX, y: bottomY))
+                readValue.draw(at: NSPoint(x: ceil(size.width - readValue.size().width), y: topY))
+                writeValue.draw(at: NSPoint(x: ceil(size.width - writeValue.size().width), y: bottomY))
+            }
+            return true
+        }
     }
 
     override func setupColor() {
@@ -68,7 +105,35 @@ final class DiskExtra: MenuExtraBase {
         diskSpace.useBaseTen = !Prefs.shared.diskSpaceForceBaseTwo
         fgMenuThemeColor = menuBarTextColor()
         buildImages()
+        layoutSpeeds()
         statusItem?.button?.image = makeImage()
+    }
+
+    /// Sizes the meter for the widest speeds it can show, so that it keeps
+    /// its width as they change.
+    private func layoutSpeeds() {
+        let attributes: [NSAttributedString.Key: Any] = [.font: speedFont]
+        let labelWidth = [L("R:"), L("W:")]
+            .map { NSAttributedString(string: $0, attributes: attributes).size().width }
+            .max() ?? 0
+        let valueWidth = Self.speedUnits
+            .map { NSAttributedString(string: "999" + L($0), attributes: attributes).size().width }
+            .max() ?? 0
+        menuWidth = Disk.viewWidth + Disk.speedGap + ceil(labelWidth) + Disk.speedLabelGap + ceil(valueWidth)
+    }
+
+    private func speedString(_ bytesPerSecond: Double) -> String {
+        let base: Double = diskSpace.useBaseTen ? 1000 : 1024
+        var value = max(0, bytesPerSecond)
+        var index = 0
+        // Moving to the next unit at 999.5 rather than at the base keeps the
+        // rounded number to three digits, which the width is measured for.
+        while value >= 999.5 && index < Self.speedUnits.count - 1 {
+            value /= base
+            index += 1
+        }
+        let format = index > 0 && value < 9.95 ? "%.1f" : "%.0f"
+        return String(format: format, value) + L(Self.speedUnits[index])
     }
 
     private func buildImages() {
@@ -252,7 +317,38 @@ final class DiskExtra: MenuExtraBase {
         if let activity = diskIO?.diskIOActivity() {
             displayedActivity = activity
         }
+        if Prefs.shared.diskShowSpeeds {
+            updateSpeeds()
+        }
         super.timerFired(timer)
+    }
+
+    /// Measures the speeds over about a second: at the activity indicator's
+    /// rate they would change too fast to read.
+    private func updateSpeeds() {
+        guard let bytes = diskIO?.startupDiskByteCounts() else {
+            speedWindow = nil
+            readSpeed = 0
+            writeSpeed = 0
+            return
+        }
+        // The uptime stops while the Mac sleeps, so only a meter that was off,
+        // or showed no speeds, leaves a measurement this old. Start over.
+        let now = ProcessInfo.processInfo.systemUptime
+        let stale = max(Disk.speedRefreshInterval, Prefs.shared.diskInterval) * 3
+        guard let window = speedWindow, now - window.time < stale else {
+            speedWindow = (now, bytes.read, bytes.written)
+            readSpeed = 0
+            writeSpeed = 0
+            return
+        }
+        // Timers may fire a little early.
+        let elapsed = now - window.time
+        guard elapsed >= Disk.speedRefreshInterval * 0.95 else { return }
+        // A count that went down, because the disk was reset, counts as idle.
+        readSpeed = bytes.read >= window.read ? Double(bytes.read - window.read) / elapsed : 0
+        writeSpeed = bytes.written >= window.written ? Double(bytes.written - window.written) / elapsed : 0
+        speedWindow = (now, bytes.read, bytes.written)
     }
 
     // MARK: - Volume actions

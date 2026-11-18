@@ -69,6 +69,10 @@
 "%@ Free" = "%1$@ 可用";
 "%@ Total" = "%1$@ 总容量";
 
+// Labels of the startup disk's read and write speeds in the menu bar
+"R:" = "读：";
+"W:" = "写：";
+
 // Unit labels
 "KB" = "KB";
 "MB" = "MB";

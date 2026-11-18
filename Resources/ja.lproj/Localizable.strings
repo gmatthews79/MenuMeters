@@ -60,6 +60,10 @@
 "%@ Free" = "空き領域：%1$@、";
 "%@ Total" = "容量：%1$@";
 
+// Labels of the startup disk's read and write speeds in the menu bar
+"R:" = "読:";
+"W:" = "書:";
+
 // Unit labels
 "KB" = "KB";
 "MB" = "MB";
